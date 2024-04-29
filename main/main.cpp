@@ -74,28 +74,37 @@ struct Consulta
 };
 
 /**
-* DEFINI플O DAS FUN합ES
+* FIM DAS STRUCT
+*/
+
+
+/**
+* DEFINI플O DAS FUN합ES EX1
 */
 
 void inserirCidade(struct Cidade cidades[], int maximo, int &constCidade)
 {
 
-    int i = constCidade+1;
-    for(;i == 0 || i < maximo && cidades[i-1].codigo > 0; i++)
+    int i, codigo = 1;
+    if(constCidade < 0) i = constCidade+1;
+    else i = constCidade;
+    for(;i < maximo && codigo > 0;)
     {
         system("cls");
         cout << "Informe o codigo da Cidade: (Insira 0 para fechar)\n";
-        cin >> cidades[i].codigo;
-        if(cidades[i].codigo > 0) {
+        cin >> codigo;
+        if(codigo > 0) {
+            cidades[i].codigo = codigo;
             cout << "Informe o nome da Cidade: ";
             cin.ignore();
             getline( cin, cidades[i].nome );
             cout << "Informe o UF da Cidade: ";
             cin >> cidades[i].uf;
+            i++;
         }
         system("cls");
     }
-    constCidade = i-1;
+    constCidade = i;
 }
 
 void exibirCidades(struct Cidade cidades[], int constCidade)
@@ -115,20 +124,24 @@ void exibirCidades(struct Cidade cidades[], int constCidade)
 void inserirEspecialidades(struct EspecialidadeMedica especialidades[], int maximo, int &constEspecialidade)
 {
 
-    int i = constEspecialidade+1;
-    for(;i == 0 || i < maximo && especialidades[i-1].codigo > 0; i++)
+    int i, codigo = 1;
+    if(constEspecialidade < 0) i = constEspecialidade+1;
+    else i = constEspecialidade;
+    for(;i < maximo && codigo > 0;)
     {
         system("cls");
         cout << "Informe o codigo da Especialidade: (Insira 0 para fechar)\n";
-        cin >> especialidades[i].codigo;
-        if(especialidades[i].codigo > 0) {
+        cin >> codigo;
+        if(codigo > 0) {
+            especialidades[i].codigo = codigo;
             cout << "Informe a descricao da Especialidade: ";
             cin.ignore();
             getline( cin, especialidades[i].descricao );
+            i++;
         }
         system("cls");
     }
-    constEspecialidade = i-1;
+    constEspecialidade = i;
 
 }
 
@@ -149,20 +162,24 @@ void exibirEspecialidades(struct EspecialidadeMedica especialidades[], int const
 void inserirCID(struct CID cids[], const int maximo, int &constCID)
 {
 
-    int i = constCID+1;
-    for(;i == 0 || i < maximo && cids[i-1].codigo > 0; i++)
+    int i, codigo = 1;
+    if(constCID < 0) i = constCID+1;
+    else i = constCID;
+    for(;i < maximo && codigo > 0;)
     {
         system("cls");
         cout << "Informe o codigo da CID: (Insira 0 para fechar)\n";
-        cin >> cids[i].codigo;
-        if(cids[i].codigo > 0) {
+        cin >> codigo;
+        if(codigo > 0) {
+            cids[i].codigo = codigo;
             cout << "Informe a descricao da CID: ";
             cin.ignore();
             getline( cin, cids[i].descricao );
+            i++;
         }
         system("cls");
     }
-    constCID = i-1;
+    constCID = i;
 
 }
 
@@ -184,13 +201,16 @@ void exibirCID(struct CID cids[], int constCID)
 void inserirMedicamentos(struct Medicamento medicamentos[], const int maximo, int &constMedicamento)
 {
 
-    int i = constMedicamento+1;
-    for(;i == 0 || i < maximo && medicamentos[i-1].codigo > 0; i++)
+    int i, codigo = 1;
+    if(constMedicamento < 0) i = constMedicamento+1;
+    else i = constMedicamento;
+    for(;i < maximo && codigo > 0;)
     {
         system("cls");
-        cout << "Informe o codigo do Medicamento: (Insira 0 para fechar)\n";
-        cin >> medicamentos[i].codigo;
-        if(medicamentos[i].codigo > 0) {
+        cout << "Informe o codigo da Medicamento: (Insira 0 para fechar)\n";
+        cin >> codigo;
+        if(codigo > 0) {
+            medicamentos[i].codigo = codigo;
             cout << "Informe a descricao do Medicamento: ";
             cin.ignore();
             getline( cin, medicamentos[i].descricao );
@@ -202,10 +222,11 @@ void inserirMedicamentos(struct Medicamento medicamentos[], const int maximo, in
             cin >> medicamentos[i].estoque_maximo;
             cout << "Informe o preco da unidade: ";
             cin >> medicamentos[i].preco_unidade;
+            i++;
         }
         system("cls");
     }
-    constMedicamento = i-1;
+    constMedicamento = i;
 
 }
 
@@ -228,6 +249,19 @@ void exibirMedicamentos(struct Medicamento medicamentos[], int constMedicamento)
 
 }
 
+/**
+* FIM DAS FUNCOES EX1
+*/
+
+/**
+* DEFINI플O DAS FUN합ES EX2
+*/
+
+
+
+/**
+* FIM DAS FUNCOES EX2
+*/
 
 int main()
 {
@@ -241,10 +275,10 @@ int main()
 
     //DECLARANDO AS FUN합ES]
     int i, j;
-    cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 0 para fechar)\n";
-    cin >> i;
-    while(i != 0)
+    do
     {
+        cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 0 para fechar)\n";
+        cin >> i;
         system("cls");
         if(i == 1) {
             cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID e 4 para Medicamentos)\n";
@@ -258,8 +292,10 @@ int main()
                 inserirCID(cids,maximo,constCID);
             } else if(j == 4) {
                 inserirMedicamentos(medicamentos, maximo, constMedicamento);
+            } else {
+                cout << "Codigo informado nao existe!";
+                getch();
             }
-            system("cls");
         } else if(i == 2) {
             cout << "Informe qual deseja exibir: \n(1 para Cidade, 2 para Especialidades, 3 para CID e 4 para Medicamentos)\n";
             cin >> j;
@@ -272,10 +308,14 @@ int main()
                 exibirCID(cids,constCID);
             } else if(j == 4) {
                 exibirMedicamentos(medicamentos, constMedicamento);
+            } else {
+                cout << "Codigo informado nao existe!";
+                getch();
             }
-            system("cls");
+        } else if(i > 0) {
+            cout << "Codigo informado nao existe!";
+            getch();
         }
-        cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 0 para fechar)\n";
-        cin >> i;
-    }
+        system("cls");
+    } while(i != 0);
 }
