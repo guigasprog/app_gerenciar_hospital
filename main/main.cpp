@@ -30,7 +30,7 @@ struct Medico
 {
     long codigo;
     string nome;
-    EspecialidadeMedica especialidadesMedicas[22]; //Tamanho de 22 porque existem 22 especialidades.
+    int especialidadesMedicas;
     string endereco;
     string telefone;
     Cidade cidade;
@@ -254,9 +254,63 @@ void exibirMedicamentos(struct Medicamento medicamentos[], int constMedicamento)
 */
 
 /**
-* DEFINIÇÃO DAS FUNÇÕES EX2
+* DEFINICAO DAS FUNCOES EX2
 */
 
+/*
+Escreva uma funcao para permitir a inclusao de novos registros na tabela de Medicos.
+*/
+
+void leituraMedico (struct Medico medico[], struct EspecialidadeMedica especialidade[], int maximo, int &constMedico, int constEspecialidade){
+    int i = constMedico+1, codigo = 1, especialidadeMedica;
+    for(;i < maximo && codigo > 0;)
+    {
+        system("cls");
+        cout << "Informe o codigo da Medicamento: (Insira 0 para fechar)\n";
+        cin >> codigo;
+        int j = 0;
+        while(i > 0 && i != j) {
+            if(codigo == medico[j].codigo) {
+                cout << "Codigo ja inserido: (Insira 0 para fechar)\n";
+                cin >> codigo;
+            }
+            j++;
+        }
+        if(codigo > 0) {
+            medico[i].codigo = codigo;
+            cout << "Informe o nome do Medico: ";
+            cin.ignore();
+            getline( cin, medico[i].nome );
+            bool achou;
+            if(constEspecialidade > 0) {
+            do
+            {
+                int j = 0;
+                cout << "Informe o id da especialidade: ";
+                cin >> especialidadeMedica;
+                while(especialidadeMedica != especialidade[j].codigo && j < constEspecialidade) {
+                    j++;
+                }
+                achou = j < constEspecialidade;
+                if(!achou) {
+                    system("cls");
+                    cout << "Id informado nao encontrado!";
+                    getch();
+                    system("cls");
+                }
+            } while(!achou);
+            } else
+            {
+                system("cls");
+                cout << "TABELA DE ESPECIALIDADES NULA!\nINFORME UMA ESPECIALIDADE!";
+                getch();
+            }
+            i++;
+        }
+        system("cls");
+    }
+    constMedico = i;
+}
 
 
 /**
@@ -267,11 +321,17 @@ int main()
 {
     //DECLARANDO VARIAVEIS
     const int maximo = 30, maximoEspecialidade = 22;
+
     struct Cidade cidades[maximo];
     struct EspecialidadeMedica especialidades[maximoEspecialidade];
     struct CID cids[maximo];
     struct Medicamento medicamentos[maximo];
+
     int constCidade = -1, constEspecialidade = -1, constCID = -1, constMedicamento = -1;
+
+    struct Medico medicos[maximo], insercaoMedico[maximo];
+
+    int constMedico = -1;
 
     //DECLARANDO AS FUNÇÕES]
     int i, j;
@@ -281,7 +341,7 @@ int main()
         cin >> i;
         system("cls");
         if(i == 1) {
-            cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID e 4 para Medicamentos)\n";
+            cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos e 5 para Medicos)\n";
             cin >> j;
             system("cls");
             if(j == 1) {
@@ -292,6 +352,8 @@ int main()
                 inserirCID(cids,maximo,constCID);
             } else if(j == 4) {
                 inserirMedicamentos(medicamentos, maximo, constMedicamento);
+            } else if(j == 5) {
+                leituraMedico(medicos,especialidades,maximo,constMedico,constEspecialidade);
             } else {
                 cout << "Codigo informado nao existe!";
                 getch();
