@@ -30,7 +30,7 @@ struct Medico
 {
     long codigo;
     string nome;
-    EspecialidadeMedica especialidadesMedicas[22]; //Tamanho de 22 porque existem 22 especialidades.
+    EspecialidadeMedica especialidadesMedicas;
     string endereco;
     string telefone;
     Cidade cidade;
@@ -254,9 +254,123 @@ void exibirMedicamentos(struct Medicamento medicamentos[], int constMedicamento)
 */
 
 /**
-* DEFINIÇÃO DAS FUNÇÕES EX2
+* DEFINICAO DAS FUNCOES EX2
 */
 
+/*
+Escreva uma funcao para permitir a inclusao de novos registros na tabela de Medicos.
+*/
+
+void leituraMedico (struct Medico medico[],
+                    struct EspecialidadeMedica especialidade[],
+                    struct Cidade cidade[],
+                    int maximo,
+                    int &constMedico,
+                    int constEspecialidade,
+                    int constCidade){
+    if(constEspecialidade > 0 && constCidade > 0) {
+        int i, codigo = 1, aux;
+        if(constMedico < 0) i = constMedico+1;
+        else i = constMedico;
+        for(;i < maximo && codigo > 0;)
+        {
+            system("cls");
+            cout << "Informe o codigo da Medico: (Insira 0 para fechar)\n";
+            cin >> codigo;
+            int j = 0;
+            while(i > 0 && i != j) {
+                if(codigo == medico[j].codigo) {
+                    system("cls");
+                    cout << "Codigo ja inserido:\nInsira outro codigo (Insira 0 para fechar)\n";
+                    cin >> codigo;
+                    j=-1;
+                }
+                j++;
+            }
+        if(codigo > 0) {
+            medico[i].codigo = codigo;
+            cout << "Informe o nome do Medico: ";
+            cin.ignore();
+            getline( cin, medico[i].nome );
+            bool achou;
+            do
+            {
+                int j = 0;
+                cout << "Informe o id da especialidade: ";
+                cin >> aux;
+                while(aux != especialidade[j].codigo && j < constEspecialidade) {
+                    j++;
+                }
+                achou = (j < constEspecialidade);
+                if(!achou) {
+                    system("cls");
+                    cout << "Id informado nao encontrado!";
+                    getch();
+                    system("cls");
+                } else {
+                    medico[i].especialidadesMedicas = especialidade[j];
+                    cout << "Especialidade selecionada: " << especialidade[j].descricao << endl;
+                    getch();
+                }
+            } while(!achou);
+            cout << "Informe o endereco do Medico: ";
+            cin.ignore();
+            getline( cin, medico[i].endereco );
+            cout << "Informe o telefone do Medico: ";
+            cin.ignore();
+            getline( cin, medico[i].telefone );
+            do
+            {
+                int j = 0;
+                cout << "Informe o id da cidade: ";
+                cin >> aux;
+                while(aux != cidade[j].codigo && j < constCidade) {
+                    j++;
+                }
+                achou = (j < constCidade);
+                if(!achou) {
+                    system("cls");
+                    cout << "Id informado nao encontrado!";
+                    getch();
+                    system("cls");
+                } else {
+                    medico[i].cidade = cidade[j];
+                    cout << "Cidade selecionada: " << cidade[j].nome << " " << cidade[j].uf << endl;
+                    getch();
+                }
+            } while(!achou);
+            i++;
+        }
+        system("cls");
+    }
+    constMedico = i;
+    } else
+    {
+        system("cls");
+        cout << "TABELA DE ESPECIALIDADES OU CIDADE VAZIA!\nINFORME PELO MENOS UM DADO EM CADA!";
+        getch();
+        system("cls");
+    }
+}
+
+void exibirMedicos(struct Medico medico[], int constMedico)
+{
+
+    if(constMedico > 0) {
+        cout << "\t\t\t\Medico\t\n";
+        cout << "Codigo\t|\tNome\t|\tEspecialidade\t|\tEndereco\t|\tTelefone\t|\tCidade\n";
+        for(int i = 0; i < constMedico; i++)
+        {
+            cout << medico[i].codigo << "\t|\t" << medico[i].nome
+            << "\t|\t" << medico[i].especialidadesMedicas.descricao
+            << "\t|\t\t" << medico[i].endereco
+            << "\t|\t" << medico[i].telefone
+            << "\t|\t" << medico[i].cidade.nome << " " << medico[i].cidade.uf << endl;
+        }
+    } else cout << "Tabela vazia";
+    getch();
+
+}
 
 
 /**
@@ -267,11 +381,17 @@ int main()
 {
     //DECLARANDO VARIAVEIS
     const int maximo = 30, maximoEspecialidade = 22;
+
     struct Cidade cidades[maximo];
     struct EspecialidadeMedica especialidades[maximoEspecialidade];
     struct CID cids[maximo];
     struct Medicamento medicamentos[maximo];
+
     int constCidade = -1, constEspecialidade = -1, constCID = -1, constMedicamento = -1;
+
+    struct Medico medicos[maximo], insercaoMedico[maximo];
+
+    int constMedico = -1;
 
     //DECLARANDO AS FUNÇÕES]
     int i, j;
@@ -281,7 +401,7 @@ int main()
         cin >> i;
         system("cls");
         if(i == 1) {
-            cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID e 4 para Medicamentos)\n";
+            cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos e 5 para Medicos)\n";
             cin >> j;
             system("cls");
             if(j == 1) {
@@ -292,6 +412,8 @@ int main()
                 inserirCID(cids,maximo,constCID);
             } else if(j == 4) {
                 inserirMedicamentos(medicamentos, maximo, constMedicamento);
+            } else if(j == 5) {
+                leituraMedico(medicos,especialidades,cidades,maximo,constMedico,constEspecialidade,constCidade);
             } else {
                 cout << "Codigo informado nao existe!";
                 getch();
@@ -308,6 +430,8 @@ int main()
                 exibirCID(cids,constCID);
             } else if(j == 4) {
                 exibirMedicamentos(medicamentos, constMedicamento);
+            } else if(j == 5) {
+                exibirMedicos(medicos, constMedico);
             } else {
                 cout << "Codigo informado nao existe!";
                 getch();
