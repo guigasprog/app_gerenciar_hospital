@@ -257,6 +257,39 @@ void exibirMedicamentos(struct Medicamento medicamentos[], int constMedicamento)
 /**
 * DEFINICAO DAS FUNCOES EX2
 */
+struct busca {
+    bool achou;
+    int pos;
+};
+busca buscaEspecialidades (struct EspecialidadeMedica especialidade[], int constEspecialidade, int cod){
+    int i = 0, f = constEspecialidade;
+    int media = (i + f) / 2;
+    for (; f >= i && cod != especialidade[media].codigo; media = (i + f) / 2){
+        if (cod > especialidade[media].codigo)
+            i = media + 1;
+        else
+            f = media - 1;
+    }
+    if (cod == especialidade[media].codigo){
+        return {true,media};
+    }
+    else return {false,media};
+}
+
+busca buscaCidades (struct Cidade cidade[], int constCidade, int cod){
+    int i = 0, f = constCidade;
+    int media = (i + f) / 2;
+    for (; f >= i && cod != cidade[media].codigo; media = (i + f) / 2){
+        if (cod > cidade[media].codigo)
+            i = media + 1;
+        else
+            f = media - 1;
+    }
+    if (cod == cidade[media].codigo){
+        return {true,media};
+    }
+    else return {false,media};
+}
 
 void leituraMedico (struct Medico medico[],
                     struct EspecialidadeMedica especialidade[],
@@ -289,27 +322,23 @@ void leituraMedico (struct Medico medico[],
             cout << "Informe o nome do Medico: ";
             cin.ignore();
             getline( cin, medico[i].nome );
-            bool achou;
+            busca achou;
             do
             {
                 int j = 0;
                 cout << "Informe o id da especialidade: ";
                 cin >> aux;
-                while(aux != especialidade[j].codigo && j < constEspecialidade) {
-                    j++;
-                }
-                achou = (j < constEspecialidade);
-                if(!achou) {
+                achou = buscaEspecialidades(especialidade, constEspecialidade, aux);
+                if(!achou.achou) {
                     system("cls");
                     cout << "Id informado nao encontrado!";
-                    getch();
-                    system("cls");
                 } else {
-                    medico[i].especialidadesMedicas = especialidade[j];
-                    cout << "Especialidade selecionada: " << especialidade[j].descricao << endl;
-                    getch();
+                    medico[i].especialidadesMedicas = especialidade[achou.pos];
+                    cout << "Especialidade selecionada: " << especialidade[achou.pos].descricao << endl;
                 }
-            } while(!achou);
+                getch();
+                system("cls");
+            } while(!achou.achou);
             cout << "Informe o endereco do Medico: ";
             cin.ignore();
             getline( cin, medico[i].endereco );
@@ -320,21 +349,17 @@ void leituraMedico (struct Medico medico[],
                 int j = 0;
                 cout << "Informe o id da cidade: ";
                 cin >> aux;
-                while(aux != cidade[j].codigo && j < constCidade) {
-                    j++;
-                }
-                achou = (j < constCidade);
-                if(!achou) {
+                achou = buscaEspecialidades(especialidade, constEspecialidade, aux);
+                if(!achou.achou) {
                     system("cls");
                     cout << "Id informado nao encontrado!";
-                    getch();
-                    system("cls");
                 } else {
-                    medico[i].cidade = cidade[j];
-                    cout << "Cidade selecionada: " << cidade[j].nome << " " << cidade[j].uf << endl;
-                    getch();
+                    medico[i].cidade = cidade[achou.pos];
+                    cout << "Cidade selecionada: " << cidade[achou.pos].nome << " " << cidade[achou.pos].uf << endl;
                 }
-            } while(!achou);
+                getch();
+                system("cls");
+            } while(!achou.achou);
             i++;
         }
         system("cls");
