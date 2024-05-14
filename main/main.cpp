@@ -261,6 +261,20 @@ struct busca {
     bool achou;
     int pos;
 };
+busca buscaMedico (struct Medico medico[], int constMedico, int cod){
+    int i = 0, f = constMedico;
+    int media = (i + f) / 2;
+    for (; f >= i && cod != medico[media].codigo; media = (i + f) / 2){
+        if (cod > medico[media].codigo)
+            i = media + 1;
+        else
+            f = media - 1;
+    }
+    if (cod == medico[media].codigo){
+        return {true,media};
+    }
+    else return {false,media};
+}
 busca buscaEspecialidades (struct EspecialidadeMedica especialidade[], int constEspecialidade, int cod){
     int i = 0, f = constEspecialidade;
     int media = (i + f) / 2;
@@ -275,7 +289,6 @@ busca buscaEspecialidades (struct EspecialidadeMedica especialidade[], int const
     }
     else return {false,media};
 }
-
 busca buscaCidades (struct Cidade cidade[], int constCidade, int cod){
     int i = 0, f = constCidade;
     int media = (i + f) / 2;
@@ -309,7 +322,7 @@ void leituraMedico (struct Medico medico[],
             cin >> codigo;
             int j = 0;
             while(i > 0 && i != j) {
-                if(codigo == medico[j].codigo) {
+                if(buscaMedico(medico, i, codigo).achou) {
                     system("cls");
                     cout << "Codigo ja inserido:\nInsira outro codigo (Insira 0 para fechar)\n";
                     cin >> codigo;
@@ -349,7 +362,7 @@ void leituraMedico (struct Medico medico[],
                 int j = 0;
                 cout << "Informe o id da cidade: ";
                 cin >> aux;
-                achou = buscaEspecialidades(especialidade, constEspecialidade, aux);
+                achou = buscaCidades(cidade, constCidade, aux);
                 if(!achou.achou) {
                     system("cls");
                     cout << "Id informado nao encontrado!";
@@ -394,7 +407,7 @@ void leituraMedico (struct Medico medico[],
             cin >> codigo;
             int j = 0;
             while(i > 0 && i != j || constMedicoExistente > j && codigo > 0) {
-                if(codigo == medico[j].codigo || codigo == medicosExistente[j].codigo) {
+                if(buscaMedico(medico, i, codigo).achou || buscaMedico(medicosExistente,constMedicoExistente,codigo).achou) {
                     system("cls");
                     cout << "Codigo ja inserido:\nInsira outro codigo (Insira 0 para fechar)\n";
                     cin >> codigo;
@@ -407,27 +420,23 @@ void leituraMedico (struct Medico medico[],
             cout << "Informe o nome do Medico: ";
             cin.ignore();
             getline( cin, medico[i].nome );
-            bool achou;
+            busca achou;
             do
             {
                 int j = 0;
                 cout << "Informe o id da especialidade: ";
                 cin >> aux;
-                while(aux != especialidade[j].codigo && j < constEspecialidade) {
-                    j++;
-                }
-                achou = (j < constEspecialidade);
-                if(!achou) {
+                achou = buscaEspecialidades(especialidade, constEspecialidade, aux);
+                if(!achou.achou) {
                     system("cls");
                     cout << "Id informado nao encontrado!";
-                    getch();
-                    system("cls");
                 } else {
-                    medico[i].especialidadesMedicas = especialidade[j];
-                    cout << "Especialidade selecionada: " << especialidade[j].descricao << endl;
-                    getch();
+                    medico[i].especialidadesMedicas = especialidade[achou.pos];
+                    cout << "Especialidade selecionada: " << especialidade[achou.pos].descricao << endl;
                 }
-            } while(!achou);
+                getch();
+                system("cls");
+            } while(!achou.achou);
             cout << "Informe o endereco do Medico: ";
             cin.ignore();
             getline( cin, medico[i].endereco );
@@ -438,21 +447,17 @@ void leituraMedico (struct Medico medico[],
                 int j = 0;
                 cout << "Informe o id da cidade: ";
                 cin >> aux;
-                while(aux != cidade[j].codigo && j < constCidade) {
-                    j++;
-                }
-                achou = (j < constCidade);
-                if(!achou) {
+                achou = buscaCidades(cidade, constCidade, aux);
+                if(!achou.achou) {
                     system("cls");
                     cout << "Id informado nao encontrado!";
-                    getch();
-                    system("cls");
                 } else {
-                    medico[i].cidade = cidade[j];
-                    cout << "Cidade selecionada: " << cidade[j].nome << " " << cidade[j].uf << endl;
-                    getch();
+                    medico[i].cidade = cidade[achou.pos];
+                    cout << "Cidade selecionada: " << cidade[achou.pos].nome << " " << cidade[achou.pos].uf << endl;
                 }
-            } while(!achou);
+                getch();
+                system("cls");
+            } while(!achou.achou);
             i++;
         }
         system("cls");
@@ -551,6 +556,206 @@ void exibirMedicos(struct Medico medico[], int constMedico)
 * FIM DAS FUNCOES EX2
 */
 
+/**
+* DEFINICAO DAS FUNCOES EX3
+*/
+busca buscaPaciente (struct Paciente paciente[], int constPaciente, string cpf){
+    int i = 0;
+    for (; i < constPaciente; i++){
+        if (cpf == paciente[i].cpf)
+            return {true,i};
+    }
+    return {false,i};
+}
+
+void leituraPaciente (struct Paciente paciente[],
+                    struct Cidade cidade[],
+                    int maximo,
+                    int &constPaciente,
+                    int constCidade){
+    if(constCidade > 0) {
+        int i, aux;
+        string cpf;
+        if(constPaciente < 0) i = constPaciente+1;
+        else i = constPaciente;
+        for(;i < maximo && cpf != "0";)
+        {
+            system("cls");
+            cout << "Informe o cpf do Paciente: (Insira 0 para fechar)\n";
+            cin.ignore();
+            getline( cin, cpf );
+            int j = 0;
+            while(i > 0 && i != j) {
+                if(buscaPaciente(paciente, i, cpf).achou) {
+                    system("cls");
+                    cout << "CPF ja inserido:\nInsira outro CPF (Insira 0 para fechar)\n";
+                    cin >> cpf;
+                    j=-1;
+                }
+                j++;
+            }
+        if(cpf != "0") {
+            paciente[i].cpf = cpf;
+            cout << "Informe o nome do Paciente: ";
+            cin.ignore();
+            getline( cin, paciente[i].nome );
+            busca achou;
+            cout << "Informe o endereco do Paciente: ";
+            cin.ignore();
+            getline( cin, paciente[i].endereco );
+            do
+            {
+                int j = 0;
+                cout << "Informe o codigo da cidade: ";
+                cin >> aux;
+                achou = buscaCidades(cidade, constCidade, aux);
+                if(!achou.achou) {
+                    system("cls");
+                    cout << "Id informado nao encontrado!";
+                } else {
+                    paciente[i].cidade = cidade[achou.pos];
+                    cout << "Cidade selecionada: " << cidade[achou.pos].nome << " " << cidade[achou.pos].uf << endl;
+                }
+                getch();
+                system("cls");
+            } while(!achou.achou);
+            i++;
+        }
+        system("cls");
+    }
+    constPaciente = i;
+    } else
+    {
+        system("cls");
+        cout << "TABELA DE CIDADE VAZIA!\nINFORME PELO MENOS UMA CIDADE!";
+        getch();
+        system("cls");
+    }
+}
+
+void leituraPaciente (struct Paciente paciente[],
+                    struct Cidade cidade[],
+                    int maximo,
+                    int &constPaciente,
+                    int constCidade,
+                    struct Paciente pacienteExistente[],
+                    int constPacienteExistente){
+    if(constCidade > 0) {
+        int i, aux;
+        string cpf;
+        if(constPaciente < 0) i = constPaciente+1;
+        else i = constPaciente;
+        for(;i < maximo && cpf != "0";)
+        {
+            system("cls");
+            cout << "Informe o cpf do Paciente: (Insira 0 para fechar)\n";
+            cin.ignore();
+            getline( cin, cpf );
+            int j = 0;
+            while(i > 0 && i != j) {
+                if(buscaPaciente(paciente, i, cpf).achou
+                   || buscaPaciente(pacienteExistente, constPacienteExistente, cpf).achou) {
+                    system("cls");
+                    cout << "CPF ja inserido:\nInsira outro CPF (Insira 0 para fechar)\n";
+                    cin >> cpf;
+                    j=-1;
+                }
+                j++;
+            }
+        if(cpf != "0") {
+            paciente[i].cpf = cpf;
+            cout << "Informe o nome do Paciente: ";
+            cin.ignore();
+            getline( cin, paciente[i].nome );
+            busca achou;
+            cout << "Informe o endereco do Paciente: ";
+            cin.ignore();
+            getline( cin, paciente[i].endereco );
+            do
+            {
+                int j = 0;
+                cout << "Informe o codigo da cidade: ";
+                cin >> aux;
+                achou = buscaCidades(cidade, constCidade, aux);
+                if(!achou.achou) {
+                    system("cls");
+                    cout << "Id informado nao encontrado!";
+                } else {
+                    paciente[i].cidade = cidade[achou.pos];
+                    cout << "Cidade selecionada: " << cidade[achou.pos].nome << " " << cidade[achou.pos].uf << endl;
+                }
+                getch();
+                system("cls");
+            } while(!achou.achou);
+            i++;
+        }
+        system("cls");
+    }
+    constPaciente = i;
+    } else
+    {
+        system("cls");
+        cout << "TABELA DE CIDADE VAZIA!\nINFORME PELO MENOS UMA CIDADE!";
+        getch();
+        system("cls");
+    }
+}
+
+void inclusaoNovosPacientes(struct Paciente paciente[],
+                    struct Cidade cidade[],
+                    int maximo,
+                    int &constPaciente,
+                    int constCidade){
+    struct Paciente novosPacientes[maximo-constPaciente];
+    int constNovosPacientes = -1;
+    struct Paciente velhosPacientes[maximo];
+    int constVelhosPacientes = constPaciente;
+    for(int i = 0; i < constPaciente; i++)
+    {
+        velhosPacientes[i] = paciente[i];
+    }
+    leituraPaciente(novosPacientes, cidade, (maximo-constPaciente), constNovosPacientes, constCidade, paciente, constPaciente);
+    int i = 0, j = 0, k = 0; // i (contador de S) j (contador de T) k (contador de A)
+    for (;i < constPaciente && j < constNovosPacientes;k++){
+        if (velhosPacientes[i].codigo < novosPacientes[j].codigo){
+            paciente[k].cpf = velhosPacientes[i].cpf;
+            paciente[k].nome = velhosPacientes[i].nome;
+            paciente[k].endereco = velhosPacientes[i].endereco;
+            paciente[k].cidade = velhosPacientes[i].cidade;
+            i++;
+            }
+        else {
+            paciente[k].cpf = novosPacientes[j].cpf;
+            paciente[k].nome = novosPacientes[j].nome;
+            paciente[k].endereco = novosPacientes[j].endereco;
+            paciente[k].cidade = novosPacientes[j].cidade;
+            j++;
+        }
+    }
+    while (i < constVelhosPacientes){
+        paciente[k].cpf = velhosPacientes[i].cpf;
+        paciente[k].nome = velhosPacientes[i].nome;
+        paciente[k].endereco = velhosPacientes[i].endereco;
+        paciente[k].cidade = velhosPacientes[i].cidade;
+        i++;
+        k++;
+    }
+    while (j < constNovosPacientes){
+        paciente[k].cpf = novosPacientes[j].cpf;
+        paciente[k].nome = novosPacientes[j].nome;
+        paciente[k].endereco = novosPacientes[j].endereco;
+        paciente[k].cidade = novosPacientes[j].cidade;
+        j++;
+        k++;
+    }
+    constPaciente = k;
+}
+
+
+/**
+* FIM DAS FUNCOES EX3
+*/
+
 int main()
 {
     //DECLARANDO VARIAVEIS
@@ -563,19 +768,27 @@ int main()
 
     int constCidade = -1, constEspecialidade = -1, constCID = -1, constMedicamento = -1;
 
-    struct Medico medicos[maximo], insercaoMedico[maximo];
+    struct Medico medicos[maximo];
 
     int constMedico = -1;
 
-    //DECLARANDO AS FUNÇÕES]
+    struct Paciente pacientes[maximo];
+
+    int constPaciente = -1;
+
+    //DECLARANDO AS FUNÇÕES
     int i, j;
     do
     {
+        system("cls");
         cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 0 para fechar)\n";
         cin >> i;
         system("cls");
+
         if(i == 1) {
-            cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos e 5 para Medicos)\n";
+            do
+            {
+            cout << "Informe qual deseja inserir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos e 5 para Medicos, 0 para voltar)\n";
             cin >> j;
             system("cls");
             if(j == 1) {
@@ -589,12 +802,20 @@ int main()
             } else if(j == 5) {
                 if(constMedico == -1) leituraMedico(medicos,especialidades,cidades,maximo,constMedico,constEspecialidade,constCidade);
                 else inclusaoNovosMedicos(medicos,especialidades,cidades,maximo,constMedico,constEspecialidade,constCidade);
-            } else {
+            } else if(j == 6) {
+                if(constPaciente == -1) leituraPaciente(pacientes, cidades,maximo,constPaciente,constCidade);
+                else inclusaoNovosPacientes(pacientes,cidades,maximo,constPaciente,constCidade);
+            } else if(j > 0) {
                 cout << "Codigo informado nao existe!";
                 getch();
+                system("cls");
             }
+            } while(j != 0);
         } else if(i == 2) {
-            cout << "Informe qual deseja exibir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos e 5 para Medico)\n";
+            do
+            {
+            system("cls");
+            cout << "Informe qual deseja exibir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos e 5 para Medico, 0 para voltar)\n";
             cin >> j;
             system("cls");
             if(j == 1) {
@@ -607,10 +828,12 @@ int main()
                 exibirMedicamentos(medicamentos, constMedicamento);
             } else if(j == 5) {
                 exibirMedicos(medicos, constMedico);
-            } else {
+            } else if(j > 0) {
                 cout << "Codigo informado nao existe!";
                 getch();
+                system("cls");
             }
+            } while (j != 0);
         } else if(i > 0) {
             cout << "Codigo informado nao existe!";
             getch();
