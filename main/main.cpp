@@ -778,10 +778,71 @@ void exibirPacientes(struct Paciente paciente[], int constPaciente)
 
 }
 
-
 /**
 * FIM DAS FUNCOES EX3
 */
+
+/**
+* DEFINICAO DAS FUNCOES EX4
+*/
+
+void exclusaoPacientes(struct Paciente pacientes[], int &constPaciente, int maximo)
+{
+    if(constPaciente > -1) {
+        int cpf, cpfs[maximo], constCpfsExclusao, constPacienteExistente = constPaciente, i = 0;
+        do
+        {
+            system("cls");
+            cout << "Informe o cpf para exclusão: (0 para parar ou voltar) ";
+            cin >> cpf;
+            if(cpf != 0) {
+                cpfs[i] = cpf;
+                i++;
+            }
+        } while(cpf != 0 && i < maximo);
+        constCpfsExclusao = i;
+        if(constCpfsExclusao > 0) {
+            struct Paciente pacienteExistentes[constPaciente];
+
+            for(i = 0; i < constPaciente; i++)
+            {
+                pacienteExistentes[i] = pacientes[i];
+            }
+            i = 0;
+            int j = 0, k = 0; // i (contador de Pacientes existente) j (contador de cpfs) k (contador de pacientes)
+            for (;j < constCpfsExclusao; i++){
+                if (pacienteExistentes[i].cpf != cpfs[j]){
+                    cout << pacienteExistentes[i].cpf << endl;
+                    pacientes[k].cpf = pacienteExistentes[i].cpf;
+                    pacientes[k].nome = pacienteExistentes[i].nome;
+                    pacientes[k].endereco = pacienteExistentes[i].endereco;
+                    pacientes[k].cidade = pacienteExistentes[i].cidade;
+                    k++;
+                    }
+                else {
+                    j++;
+                }
+            }
+            while (i < constPacienteExistente){
+                pacientes[k].cpf = pacienteExistentes[i].cpf;
+                pacientes[k].nome = pacienteExistentes[i].nome;
+                pacientes[k].endereco = pacienteExistentes[i].endereco;
+                pacientes[k].cidade = pacienteExistentes[i].cidade;
+                i++;
+                k++;
+            }
+            constPaciente = k;
+        } else {
+        cout << "NENHUM CPF INSERIDO PARA EXCLUSÃO";
+        getch();
+    }
+    } else {
+        cout << "NENHUM PACIENTE INSERIDO";
+        getch();
+    }
+    system("cls");
+}
+
 
 int main()
 {
@@ -808,7 +869,7 @@ int main()
     do
     {
         system("cls");
-        cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 0 para fechar)\n";
+        cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 3 para Exclusao, 0 para fechar)\n";
         cin >> i;
         system("cls");
 
@@ -833,6 +894,20 @@ int main()
                 if(constPaciente == -1) leituraPaciente(pacientes, cidades,maximo,constPaciente,constCidade);
                 else inclusaoNovosPacientes(pacientes,cidades,maximo,constPaciente,constCidade);
             } else if(j > 0) {
+                cout << "Codigo informado nao existe!\n";
+                system("pause");
+                system("cls");
+            }
+            } while(j != 0);
+        } else if(i == 3) {
+            do
+            {
+            cout << "Informe qual deseja exclusao: \n(1 para Paciente, 0 para voltar)\n";
+            cin >> j;
+            system("cls");
+            if(j == 1) {
+                exclusaoPacientes(pacientes, constPaciente, maximo);
+            }else if(j > 0) {
                 cout << "Codigo informado nao existe!\n";
                 system("pause");
                 system("cls");
