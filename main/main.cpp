@@ -788,7 +788,7 @@ void exibirPacientes(struct Paciente paciente[], int constPaciente)
 
 void exclusaoPacientes(struct Paciente pacientes[], int &constPaciente, int maximo)
 {
-    if(constPaciente > -1) {
+    if(constPaciente > 0) {
         int cpf, cpfs[maximo], constCpfsExclusao, constPacienteExistente = constPaciente, i = 0;
         do
         {
@@ -810,9 +810,8 @@ void exclusaoPacientes(struct Paciente pacientes[], int &constPaciente, int maxi
             }
             i = 0;
             int j = 0, k = 0; // i (contador de Pacientes existente) j (contador de cpfs) k (contador de pacientes)
-            for (;j < constCpfsExclusao; i++){
+            for (;j < constCpfsExclusao && i < constPaciente; i++){
                 if (pacienteExistentes[i].cpf != cpfs[j]){
-                    cout << pacienteExistentes[i].cpf << endl;
                     pacientes[k].cpf = pacienteExistentes[i].cpf;
                     pacientes[k].nome = pacienteExistentes[i].nome;
                     pacientes[k].endereco = pacienteExistentes[i].endereco;
