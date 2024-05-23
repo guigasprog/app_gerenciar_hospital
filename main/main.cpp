@@ -1003,6 +1003,7 @@ void agendarConsulta(struct Consulta consultas[], int &constConsulta,
 /**
 * DEFINICAO DAS FUNCOES EX6
 */
+
 void exibirDeterminadoMedicamento(struct Medicamento medicamentos[], int constMedicamento) {
     if(constMedicamento > 0) {
         int codigo, pos;
@@ -1025,6 +1026,46 @@ void exibirDeterminadoMedicamento(struct Medicamento medicamentos[], int constMe
     } else cout << "Lista vazia";
     getch();
 }
+
+/**
+* FIM DAS FUNCOES EX6
+*/
+
+/**
+* DEFINICAO DAS FUNCOES EX7
+*/
+
+void exibirAbaixoMinimoMedicamento(struct Medicamento medicamentos[], int constMedicamento) {
+    if(constMedicamento > 0) {
+        int i = 0, j = 0;
+        double valorTotal = 0;
+        struct Medicamento medicamentosAbaixoDoMinimo[constMedicamento];
+        for(i = 0; i < constMedicamento; i++) {
+            if(medicamentos[i].quant_estoque < medicamentos[i].estoque_minimo+1) {
+                medicamentosAbaixoDoMinimo[j] = medicamentos[i];
+                j++;
+            }
+        }
+        if(j>0) {
+          cout << "\t\t\t\tMedicamento\t\n";
+            cout << "Codigo\t|\tDesc\t|\tQtde\t|\tMax\t|\tQtde para Comprada\t|\tPreco Total\n";
+            for(i = 0; i < j; i++){
+                cout << medicamentosAbaixoDoMinimo[i].codigo << "\t|\t" << medicamentosAbaixoDoMinimo[i].descricao
+                << "\t|\t" << medicamentosAbaixoDoMinimo[i].quant_estoque
+                << "\t|\t" << medicamentosAbaixoDoMinimo[i].estoque_maximo
+                << "\t|\t" << (medicamentosAbaixoDoMinimo[i].estoque_maximo - medicamentosAbaixoDoMinimo[i].quant_estoque)
+                << "\t|\t" << (medicamentosAbaixoDoMinimo[i].preco_unidade * (medicamentosAbaixoDoMinimo[i].estoque_maximo - medicamentosAbaixoDoMinimo[i].quant_estoque)) << endl;
+                valorTotal += (medicamentosAbaixoDoMinimo[i].preco_unidade * (medicamentosAbaixoDoMinimo[i].estoque_maximo - medicamentosAbaixoDoMinimo[i].quant_estoque));
+            }
+            cout << "|VALOR TOTAL= RS" << valorTotal << "|";
+        } else cout << "Tabela vazia";
+    } else cout << "Tabela vazia";
+    getch();
+}
+
+/**
+* FIM DAS FUNCOES EX7
+*/
 
 int main()
 {
@@ -1098,13 +1139,15 @@ int main()
                 do
                 {
                     system("cls");
-                    cout << "Informe como sera sua exibicao: \n(1 para Todos da lista e 2 para Determinado, 0 para voltar)\n";
+                    cout << "Informe como sera sua exibicao: \n(1 para Todos da lista, 2 para Determinado e 3 para Abaixo do Minimo, 0 para voltar)\n";
                     cin >> k;
                     system("cls");
                     if(k == 1) {
                         exibirMedicamentos(medicamentos, constMedicamento);
                     } else if(k == 2) {
                         exibirDeterminadoMedicamento(medicamentos, constMedicamento);
+                    } else if(k == 3) {
+                        exibirAbaixoMinimoMedicamento(medicamentos, constMedicamento);
                     } else if(k > 0) {
                         cout << "Codigo informado nao existe!\n";
                         system("pause");
