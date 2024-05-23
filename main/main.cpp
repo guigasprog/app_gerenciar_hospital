@@ -55,23 +55,14 @@ struct Medicamento
     float preco_unidade;
 };
 
-struct DateTime
-{
-    int dia;
-    int mes;
-    int ano;
-    int hora;
-    int minuto;
-};
-
 struct Consulta
 {
     Paciente paciente;
     Medico medico;
-    DateTime dataHora;
+    string dataHora;
     CID cid;
-    Medicamento Medicamentos[10];
-    int qtde_medicamento[10];
+    Medicamento medicamentos;
+    int qtde_medicamento;
 };
 
 /**
@@ -303,6 +294,36 @@ busca buscaCidades (struct Cidade cidade[], int constCidade, int cod){
             f = media - 1;
     }
     if (cod == cidade[media].codigo){
+        return {true,media};
+    }
+    else return {false,media};
+}
+
+busca buscaCid (struct CID cid[], int constCid, int cod){
+    int i = 0, f = constCid;
+    int media = (i + f) / 2;
+    for (; f >= i && cod != cid[media].codigo; media = (i + f) / 2){
+        if (cod > cid[media].codigo)
+            i = media + 1;
+        else
+            f = media - 1;
+    }
+    if (cod == cid[media].codigo){
+        return {true,media};
+    }
+    else return {false,media};
+}
+
+busca buscaMedicamento (struct Medicamento medicamentos[], int constMedicamentos, int cod){
+    int i = 0, f = constMedicamentos;
+    int media = (i + f) / 2;
+    for (; f >= i && cod != medicamentos[media].codigo; media = (i + f) / 2){
+        if (cod > medicamentos[media].codigo)
+            i = media + 1;
+        else
+            f = media - 1;
+    }
+    if (cod == medicamentos[media].codigo){
         return {true,media};
     }
     else return {false,media};
@@ -842,6 +863,146 @@ void exclusaoPacientes(struct Paciente pacientes[], int &constPaciente, int maxi
     system("cls");
 }
 
+/**
+* FIM DAS FUNCOES EX4
+*/
+
+/**
+* DEFINICAO DAS FUNCOES EX5
+*/
+
+void agendarConsulta(struct Consulta consultas[], int &constConsulta,
+                        struct Paciente pacientes[], int constPaciente,
+                        struct Medico medicos[], int constMedico,
+                        struct CID cids[], int constCid,
+                        struct Medicamento medicamentos[], int constMedicamento)
+{
+    if(constPaciente > 0 && constMedico > 0 && constCid > 0 && constMedicamento > 0) {
+        int i = constConsulta+1;
+
+        long cpf, codigo;
+        system("cls");
+        cout << "Informe o cpf do Paciente: \n";
+        cin.ignore();
+        cin >> cpf;
+        int j = 0;
+        busca buscar = buscaPaciente(pacientes, constPaciente, cpf);
+        for(;constPaciente > 0 && constPaciente != j && !buscar.achou;) {
+            buscar = buscaPaciente(pacientes, constPaciente, cpf);
+            if(!buscar.achou) {
+                system("cls");
+                cout << "CPF não encontrado:\nInsira outro CPF\n";
+                cin.ignore();
+                cin >> cpf;
+                j=-1;
+            }
+            j++;
+        }
+        if(buscar.achou) {
+            system("cls");
+            cout << "Paciente: " <<pacientes[buscar.pos].nome << " | " << pacientes[buscar.pos].cidade.nome << " " << pacientes[buscar.pos].cidade.uf;
+            getch();
+            consultas[i].paciente = pacientes[buscar.pos];
+        }
+
+        system("cls");
+        j = 0;
+        cout << "Informe o codigo do Medico: \n";
+        cin.ignore();
+        cin >> codigo;
+        buscar = buscaMedico(medicos, constMedico, codigo);
+        for(;constMedico > 0 && constMedico != j && !buscar.achou;) {
+            buscar = buscaMedico(medicos, constMedico, codigo);
+            if(!buscar.achou) {
+                system("cls");
+                cout << "Codigo não encontrado:\nInsira outro Codigo\n";
+                cin.ignore();
+                cin >> codigo;
+                j=-1;
+            }
+            j++;
+        }
+        if(buscar.achou) {
+            system("cls");
+            cout << "Medico: " << medicos[buscar.pos].nome << " | " << medicos[buscar.pos].especialidadesMedicas.descricao;
+            getch();
+            consultas[i].medico = medicos[buscar.pos];
+        }
+
+        system("cls");
+        j = 0;
+        cout << "Informe o codigo do CID: \n";
+        cin.ignore();
+        cin >> codigo;
+        buscar = buscaCid(cids, constCid, codigo);
+        for(;constCid > 0 && constCid != j && !buscar.achou;) {
+            buscar = buscaCid(cids, constCid, codigo);
+            if(!buscar.achou) {
+                system("cls");
+                cout << "Codigo não encontrado:\nInsira outro Codigo\n";
+                cin.ignore();
+                cin >> codigo;
+                j=-1;
+            }
+            j++;
+        }
+        if(buscar.achou) {
+            system("cls");
+            cout << "CID: " << cids[buscar.pos].descricao;
+            getch();
+            consultas[i].cid = cids[buscar.pos];
+        }
+
+        system("cls");
+        j = 0;
+        cout << "Informe o codigo do Medicamento: \n";
+        cin.ignore();
+        cin >> codigo;
+        buscar = buscaMedicamento(medicamentos, constMedicamento, codigo);
+        for(;constMedicamento > 0 && constMedicamento != j && !buscar.achou;) {
+            buscar = buscaMedicamento(medicamentos, constMedicamento, codigo);
+            if(!buscar.achou) {
+                system("cls");
+                cout << "Codigo não encontrado:\nInsira outro Codigo\n";
+                cin.ignore();
+                cin >> codigo;
+                j=-1;
+            }
+            j++;
+        }
+        if(buscar.achou) {
+            system("cls");
+            cout << "Medicamentos: " << medicamentos[buscar.pos].descricao;
+            getch();
+            cout << "\nInforme a quantidade de medicamento: ";
+            cin >> consultas[i].qtde_medicamento;
+            for(; consultas[i].qtde_medicamento > medicamentos[buscar.pos].quant_estoque;){
+                system("cls");
+                cout << "Informe outra quantidade de medicamento: (valor anterior maior que a quantidade no estoque)";
+                cin >> consultas[i].qtde_medicamento;
+            }
+            medicamentos[buscar.pos].quant_estoque -= consultas[i].qtde_medicamento;
+            consultas[i].medicamentos = medicamentos[buscar.pos];
+        }
+
+        system("cls");
+        cout << "Informe a data e hora do agendamento: ";
+        cin.ignore();
+        getline( cin, consultas[i].dataHora );
+    } else {
+        cout << "Alguma das tabelas(paciente, medico, cid e medicamento), esta vazia\nINSIRA PELO MENOS UM DADO EM CADA TABELA";
+        getch();
+    }
+    system("cls");
+};
+
+/**
+* FIM DAS FUNCOES EX5
+*/
+
+/**
+* DEFINICAO DAS FUNCOES EX6
+*/
 
 int main()
 {
@@ -852,23 +1013,23 @@ int main()
     struct EspecialidadeMedica especialidades[maximoEspecialidade];
     struct CID cids[maximo];
     struct Medicamento medicamentos[maximo];
-
     int constCidade = -1, constEspecialidade = -1, constCID = -1, constMedicamento = -1;
 
     struct Medico medicos[maximo];
-
     int constMedico = -1;
 
     struct Paciente pacientes[maximo];
-
     int constPaciente = -1;
+
+    struct Consulta consultas[maximo];
+    int constConsulta = -1;
 
     //DECLARANDO AS FUNÇÕES
     int i, j;
     do
     {
         system("cls");
-        cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 3 para Exclusao, 0 para fechar)\n";
+        cout << "Informe se deseja inserir ou exibir dados: \n(1 para Inserir, 2 para Exibir, 3 para Exclusao,\n4 para Agendar, 0 para fechar)\n";
         cin >> i;
         system("cls");
 
@@ -893,20 +1054,6 @@ int main()
                 if(constPaciente == -1) leituraPaciente(pacientes, cidades,maximo,constPaciente,constCidade);
                 else inclusaoNovosPacientes(pacientes,cidades,maximo,constPaciente,constCidade);
             } else if(j > 0) {
-                cout << "Codigo informado nao existe!\n";
-                system("pause");
-                system("cls");
-            }
-            } while(j != 0);
-        } else if(i == 3) {
-            do
-            {
-            cout << "Informe qual deseja exclusao: \n(1 para Paciente, 0 para voltar)\n";
-            cin >> j;
-            system("cls");
-            if(j == 1) {
-                exclusaoPacientes(pacientes, constPaciente, maximo);
-            }else if(j > 0) {
                 cout << "Codigo informado nao existe!\n";
                 system("pause");
                 system("cls");
@@ -937,6 +1084,38 @@ int main()
                 system("cls");
             }
             } while (j != 0);
+        } else if(i == 3) {
+            do
+            {
+            cout << "Informe qual deseja exclusao: \n(1 para Paciente, 0 para voltar)\n";
+            cin >> j;
+            system("cls");
+            if(j == 1) {
+                exclusaoPacientes(pacientes, constPaciente, maximo);
+            }else if(j > 0) {
+                cout << "Codigo informado nao existe!\n";
+                system("pause");
+                system("cls");
+            }
+            } while(j != 0);
+        } else if(i == 4) {
+            do
+            {
+            cout << "Informe o que deseja Agendar: \n(1 para Consulta, 0 para voltar)\n";
+            cin >> j;
+            system("cls");
+            if(j == 1) {
+                agendarConsulta(consultas, constConsulta,
+                                   pacientes, constPaciente,
+                                   medicos, constMedico,
+                                   cids, constCID,
+                                   medicamentos, constMedicamento);
+            }else if(j > 0) {
+                cout << "Codigo informado nao existe!\n";
+                system("pause");
+                system("cls");
+            }
+            } while(j != 0);
         } else if(i > 0) {
             cout << "Codigo informado nao existe!\n";
             system("pause");
