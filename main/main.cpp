@@ -1003,6 +1003,28 @@ void agendarConsulta(struct Consulta consultas[], int &constConsulta,
 /**
 * DEFINICAO DAS FUNCOES EX6
 */
+void exibirDeterminadoMedicamento(struct Medicamento medicamentos[], int constMedicamento) {
+    if(constMedicamento > 0) {
+        int codigo, pos;
+        cout << "Informe o codigo do medicamento que deseja exibir: ";
+        cin >> codigo;
+        busca buscar = buscaMedicamento(medicamentos, constMedicamento, codigo);
+        for(;!buscar.achou;) {
+            cout << "Codigo informado nao encontrado, informe outro codigo: ";
+            cin >> codigo;
+            buscar = buscaMedicamento(medicamentos, constMedicamento, codigo);
+        }
+        pos = buscar.pos;
+        cout << "\t\t\t\tMedicamento\t\n";
+        cout << "Codigo\t|\tDesc\t|\tQtde\t|\tMin\t|\tMax\t|\tPreco\t|\tPreco Total\n";
+        cout << medicamentos[pos].codigo << "\t|\t" << medicamentos[pos].descricao
+            << "\t|\t" << medicamentos[pos].quant_estoque
+            << "\t|\t" << medicamentos[pos].estoque_minimo
+            << "\t|\t" << medicamentos[pos].estoque_maximo
+            << "\t|\t" << medicamentos[pos].preco_unidade << "\t|\t" << (medicamentos[pos].preco_unidade * medicamentos[pos].quant_estoque) << endl;
+    } else cout << "Lista vazia";
+    getch();
+}
 
 int main()
 {
@@ -1025,7 +1047,7 @@ int main()
     int constConsulta = -1;
 
     //DECLARANDO AS FUNÇÕES
-    int i, j;
+    int i, j, k;
     do
     {
         system("cls");
@@ -1073,13 +1095,28 @@ int main()
             } else if(j == 3) {
                 exibirCID(cids,constCID);
             } else if(j == 4) {
-                exibirMedicamentos(medicamentos, constMedicamento);
+                do
+                {
+                    system("cls");
+                    cout << "Informe como sera sua exibicao: \n(1 para Todos da lista e 2 para Determinado, 0 para voltar)\n";
+                    cin >> k;
+                    system("cls");
+                    if(k == 1) {
+                        exibirMedicamentos(medicamentos, constMedicamento);
+                    } else if(k == 2) {
+                        exibirDeterminadoMedicamento(medicamentos, constMedicamento);
+                    } else if(k > 0) {
+                        cout << "Codigo informado nao existe!\n";
+                        system("pause");
+                        system("cls");
+                    }
+                } while(k != 0);
             } else if(j == 5) {
                 exibirMedicos(medicos, constMedico);
             } else if(j == 6) {
                 exibirPacientes(pacientes,constPaciente);
             } else if(j > 0) {
-                cout << "Codigo informado nao existe!";
+                cout << "Codigo informado nao existe!\n";
                 system("pause");
                 system("cls");
             }
