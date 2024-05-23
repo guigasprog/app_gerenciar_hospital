@@ -39,7 +39,7 @@ struct Medico
 
 struct Paciente
 {
-    long cpf;
+    long long cpf;
     string nome;
     string endereco;
     Cidade cidade;
@@ -584,7 +584,7 @@ void exibirMedicos(struct Medico medico[], int constMedico)
 * DEFINICAO DAS FUNCOES EX3
 */
 
-busca buscaPaciente (struct Paciente paciente[], int constPaciente, long cpf){
+busca buscaPaciente (struct Paciente paciente[], int constPaciente, long long cpf){
     int i = 0, f = constPaciente;
     int media = (i + f) / 2;
     for (; f >= i && cpf != paciente[media].cpf; media = (i + f) / 2){
@@ -606,7 +606,7 @@ void leituraPaciente (struct Paciente paciente[],
                     int constCidade){
     if(constCidade > 0) {
         int i, aux;
-        long cpf = 1;
+        long long cpf = 1;
         if(constPaciente < 0) i = constPaciente+1;
         else i = constPaciente;
         for(;i < maximo && cpf != 0;)
@@ -673,7 +673,7 @@ void leituraPaciente (struct Paciente paciente[],
                     int constPacienteExistente){
     if(constCidade > 0) {
         int i, aux;
-        long cpf = 1;
+        long long cpf = 1;
         if(constPaciente < 0) i = constPaciente+1;
         else i = constPaciente;
         for(;i < maximo && cpf != 0;)
@@ -880,7 +880,8 @@ void agendarConsulta(struct Consulta consultas[], int &constConsulta,
     if(constPaciente > 0 && constMedico > 0 && constCid > 0 && constMedicamento > 0) {
         int i = constConsulta+1;
 
-        long cpf, codigo;
+        long long cpf;
+        int codigo;
         system("cls");
         cout << "Informe o cpf do Paciente: \n";
         cin.ignore();
@@ -1067,6 +1068,27 @@ void exibirAbaixoMinimoMedicamento(struct Medicamento medicamentos[], int constM
 * FIM DAS FUNCOES EX7
 */
 
+/**
+* DEFINICAO DAS FUNCOES EX8
+*/
+
+void exibirValorArrecadadoConsultas(struct Consulta consultas[], int constConsultas) {
+    if(constConsultas > -1) {
+        double valorTotal = 0;
+        valorTotal += constConsultas * 100;
+        for(int i = 0; i < constConsultas; i++) {
+            valorTotal += consultas[i].medicamentos.preco_unidade * consultas[i].qtde_medicamento;
+        }
+        cout << "|VALOR ARRECADADO COM AS CONSULTAS E DE RS" << valorTotal << "!|";
+    } else cout << "NENHUMA CONSULTA";
+    getch();
+    system("cls");
+}
+
+/**
+* FIM DAS FUNCOES EX8
+*/
+
 int main()
 {
     //DECLARANDO VARIAVEIS
@@ -1126,7 +1148,7 @@ int main()
             do
             {
             system("cls");
-            cout << "Informe qual deseja exibir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos, 5 para Medico\ne 6 para Pacientes, 0 para voltar)\n";
+            cout << "Informe qual deseja exibir: \n(1 para Cidade, 2 para Especialidades, 3 para CID, 4 para Medicamentos, 5 para Medico,\n6 para Pacientes e 7 para Valor Arrecadado com consultas, 0 para voltar)\n";
             cin >> j;
             system("cls");
             if(j == 1) {
@@ -1158,6 +1180,8 @@ int main()
                 exibirMedicos(medicos, constMedico);
             } else if(j == 6) {
                 exibirPacientes(pacientes,constPaciente);
+            } else if(j == 7) {
+                exibirValorArrecadadoConsultas(consultas,constConsulta);
             } else if(j > 0) {
                 cout << "Codigo informado nao existe!\n";
                 system("pause");
