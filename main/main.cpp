@@ -810,7 +810,8 @@ void exibirPacientes(struct Paciente paciente[], int constPaciente)
 void exclusaoPacientes(struct Paciente pacientes[], int &constPaciente, int maximo)
 {
     if(constPaciente > 0) {
-        int cpf, cpfs[maximo], constCpfsExclusao, constPacienteExistente = constPaciente, i = 0;
+        int constCpfsExclusao, constPacienteExistente = constPaciente, i = 0;
+        long long cpf, cpfs[maximo];
         do
         {
             system("cls");
@@ -990,6 +991,7 @@ void agendarConsulta(struct Consulta consultas[], int &constConsulta,
         cout << "Informe a data e hora do agendamento: ";
         cin.ignore();
         getline( cin, consultas[i].dataHora );
+        constConsulta = i;
     } else {
         cout << "Alguma das tabelas(paciente, medico, cid e medicamento), esta vazia\nINSIRA PELO MENOS UM DADO EM CADA TABELA";
         getch();
@@ -1075,8 +1077,9 @@ void exibirAbaixoMinimoMedicamento(struct Medicamento medicamentos[], int constM
 void exibirValorArrecadadoConsultas(struct Consulta consultas[], int constConsultas) {
     if(constConsultas > -1) {
         double valorTotal = 0;
-        valorTotal += constConsultas * 100;
-        for(int i = 0; i < constConsultas; i++) {
+        cout << "Numero de consultas: " << constConsultas << endl;
+        valorTotal += (constConsultas+1) * 100;
+        for(int i = 0; i < constConsultas+1; i++) {
             valorTotal += consultas[i].medicamentos.preco_unidade * consultas[i].qtde_medicamento;
         }
         cout << "|VALOR ARRECADADO COM AS CONSULTAS E DE RS" << valorTotal << "!|";
